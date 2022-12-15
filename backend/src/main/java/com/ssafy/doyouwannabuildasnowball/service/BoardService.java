@@ -24,12 +24,12 @@ import static com.ssafy.doyouwannabuildasnowball.common.exception.ErrorCode.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Slf4j
 public class BoardService {
 
 
     private final BoardRepository boardRepository;
-
     private final SnowglobeRepository snowglobeRepository;
     private final MemberRepository memberRepository;
 
@@ -38,35 +38,27 @@ public class BoardService {
 //        List<Board> boardList = boardRepository.findAll(snowglobeId)
 //                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         List<Board> boardList = boardRepository.findAll(snowglobeId);
-
-
-        List<BoardResponse> boardResponses = new ArrayList<>();
-        boardList.forEach(board -> boardResponses.add(BoardResponse.builder()
-                        .createdTime(board.getCreatedTime())
-                        .modifiedTime(board.getModifiedTime())
-                        .boardId(board.getBoardId())
-                        .snowglobeId(board.getSnowglobe().getSnowglobeId())
-                        .writerId(board.getWriter().getMemberId())
-                        .content(board.getContent())
-                        .imageUrl(board.getPicture()).build()
-        ));
-        BoardAllResponse boardAllResponse = new BoardAllResponse(boardResponses);
-
-
-        return boardAllResponse;
+        return Board.createBoardResponse(boardList);
     }
 
     @Transactional
     public void saveContent(WriteBoardRequest writeBoardRequest){
 
+        // find snowball
         Snowglobe snowglobe = snowglobeRepository.findById(writeBoardRequest.getSnowglobeId())
                 .orElseThrow(()->new CustomException(SNOWGLOBE_NOT_FOUND));
 
+        // 이미지 설정
         String imageURL = writeBoardRequest.getPicture();
+
+        // 작성자 세팅
         Member member = null;
         if(writeBoardRequest.getWriterId() != null)
             member = memberRepository.findById(writeBoardRequest.getWriterId()).orElse(null);
-        boardRepository.save(Board.builder()
+
+        // 게시글 저장
+        boardRepository.save(
+                Board.builder()
                 .content(writeBoardRequest.getContent())
                 .picture(imageURL)
                 .snowglobe(snowglobe)
@@ -75,24 +67,34 @@ public class BoardService {
     }
 
 
+    @Transactional
     public void modifyCotnent(BoardDto boardDto) {
 
         Board board = boardRepository.findById(boardDto.getBoardId());
 //        Board board = boardRepository.findById(boardDto.getBoardId())
 //                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+
+        // 게시글 수정 pk와 게시글 pk가 다른 경우
         if(board.getWriter().getMemberId() != boardDto.getWriterId()) {
             throw new CustomException(UNMATCHED_MEMBER);
         }
+
         String imageURL = boardDto.getPicture();
         board.contentUpdate(boardDto.getContent(), imageURL);
         boardRepository.updateBoardContent(board.getContent(), board.getPicture(), board.getBoardId());
 
     }
 
+    @Transactional
     public void removeContent(Long boardId, Long memberId) {
+
+        // 게시글 검색
         Board board = boardRepository.findById(boardId);
 //        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+
+
         Long snowglobeId = board.getSnowglobe().getSnowglobeId();
+        // 게시글 스노우볼 검색
         Snowglobe snowglobe = snowglobeRepository.findById(snowglobeId).orElseThrow(() -> new CustomException(SNOWGLOBE_NOT_FOUND));
         Long receiverId = snowglobe.getReceiver().getMemberId();
 

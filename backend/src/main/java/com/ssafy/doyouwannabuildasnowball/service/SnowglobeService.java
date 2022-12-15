@@ -68,7 +68,8 @@ public class SnowglobeService {
     public void updateSnowglobe(Long uid, SnowglobeUpdateRequestDto snowglobeUpdateRequestDto) {
         //메인 스노우볼 아이디 main_id > mid
         Member member = memberRepository.findById(uid).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        Music music = musicRepository.findById(snowglobeUpdateRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
+        Music music = musicRepository.findById(snowglobeUpdateRequestDto.getMusicId());
+//        Music music = musicRepository.findById(snowglobeUpdateRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
         Snowglobe snowglobe = member.getSnowglobe();
         snowglobe.updateScreenshot(snowglobeUpdateRequestDto.getScreenshot());
         snowglobe.updateMusic(music);
@@ -103,7 +104,8 @@ public class SnowglobeService {
     public Long presentSnowglobe(Long rid, SnowglobeRequestDto snowglobeRequestDto) {
         Member maker = memberRepository.findById(snowglobeRequestDto.getMakerId()).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
         Member receiver = memberRepository.findById(rid).orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
-        Music music = musicRepository.findById(snowglobeRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
+        Music music = musicRepository.findById(snowglobeRequestDto.getMusicId());
+//        Music music = musicRepository.findById(snowglobeRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
         Snowglobe snowglobe = Snowglobe.builder()
                 .maker(maker)
                 .screenshot(snowglobeRequestDto.getScreenshot())
@@ -204,7 +206,8 @@ public class SnowglobeService {
     @Transactional
     public void musicSelect(Long sid, MusicSelectRequestDto musicSelectRequestDto) {
         Snowglobe snowglobe = snowglobeRepository.findById(sid).orElseThrow(() -> new CustomException(SNOWGLOBE_NOT_FOUND));
-        Music music = musicRepository.findById(musicSelectRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
+        Music music = musicRepository.findById(musicSelectRequestDto.getMusicId());
+//        Music music = musicRepository.findById(musicSelectRequestDto.getMusicId()).orElseThrow(() -> new CustomException(MUSIC_NOT_FOUND));
         snowglobe.updateMusic(music);
         snowglobeRepository.save(snowglobe);
     }
