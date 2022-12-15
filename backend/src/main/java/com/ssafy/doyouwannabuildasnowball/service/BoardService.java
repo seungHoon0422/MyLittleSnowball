@@ -35,8 +35,9 @@ public class BoardService {
 
     public BoardAllResponse findAllContentsBySnowglobe(Long snowglobeId) {
 
-        List<Board> boardList = boardRepository.findAllContents(snowglobeId)
-                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+//        List<Board> boardList = boardRepository.findAll(snowglobeId)
+//                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+        List<Board> boardList = boardRepository.findAll(snowglobeId);
 
 
         List<BoardResponse> boardResponses = new ArrayList<>();
@@ -76,8 +77,9 @@ public class BoardService {
 
     public void modifyCotnent(BoardDto boardDto) {
 
-        Board board = boardRepository.findById(boardDto.getBoardId())
-                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+        Board board = boardRepository.findById(boardDto.getBoardId());
+//        Board board = boardRepository.findById(boardDto.getBoardId())
+//                .orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         if(board.getWriter().getMemberId() != boardDto.getWriterId()) {
             throw new CustomException(UNMATCHED_MEMBER);
         }
@@ -88,7 +90,8 @@ public class BoardService {
     }
 
     public void removeContent(Long boardId, Long memberId) {
-        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
+        Board board = boardRepository.findById(boardId);
+//        Board board = boardRepository.findById(boardId).orElseThrow(() -> new CustomException(BOARD_NOT_FOUND));
         Long snowglobeId = board.getSnowglobe().getSnowglobeId();
         Snowglobe snowglobe = snowglobeRepository.findById(snowglobeId).orElseThrow(() -> new CustomException(SNOWGLOBE_NOT_FOUND));
         Long receiverId = snowglobe.getReceiver().getMemberId();
