@@ -40,6 +40,7 @@ public class Member extends BaseEntity {
 
     private String refreshToken;
 
+
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
@@ -50,11 +51,15 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "snowglobe_id")
     private Snowglobe snowglobe;
     
-    
+
 //    public static Member join(Long memberId) {
 //    	Member member = new Member();
 //    	member.memberId = memberId;
 //
 //        return member;
 //    }
+
+
+
+
 }
