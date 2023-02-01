@@ -36,8 +36,6 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private AuthProvider authProvider;
-
-
     private String refreshToken;
 
 
