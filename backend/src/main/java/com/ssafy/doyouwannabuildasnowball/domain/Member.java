@@ -39,6 +39,7 @@ public class Member extends BaseEntity {
     private String refreshToken;
 
 
+
     @Enumerated(EnumType.STRING)
     private MemberRole role;
 
