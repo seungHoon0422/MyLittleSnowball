@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @ToString
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
